@@ -35,55 +35,58 @@ namespace assignment {
   }
 
   bool MinBinaryHeap::Insert(int key, int value) {
-
     if (size_ == capacity_) {
-      // двоичная куча заполнена, операция вставки нового узла невозможна
       return false;
     }
 
-    // Tips:
-    // 1. Вставьте новый узел в "конец" массива.
-    // 2. Увеличьте размер двоичной кучи.
-    // 3. Вызовите операцию sift_up над индексом вставленного элемента.
+    data_[size()].key = key;
+    data_[size()].value = value;
+    sift_up(size());
+    size_++;
 
-    return false;
+    return true;
   }
 
   std::optional<int> MinBinaryHeap::Extract() {
-
     if (size_ == 0) {
-      // двоичная куча пустая, операция извлечения корня невозможна
       return std::nullopt;
     }
 
-    // Tips:
-    // 1. Сохраните значение текущего корня в переменной.
-    // 2. В корень поместите последний элемент (правый нижний в куче).
-    // 3. Уменьшите размер двоичной кучи.
-    // 4. Вызовите функцию "спуска" узлов heapify над индексом корня.
-
-    return std::nullopt;
+    int currentValue = data_[0].value;
+    data_[0] = data_[size_ - 1];
+    size_--;
+    heapify(0);
+    return currentValue;
   }
 
   bool MinBinaryHeap::Remove(int key) {
 
     constexpr int min_key_value = std::numeric_limits<int>::min();
 
-    // Tips:
-    // 1. Найдите индекс удаляемого узла по ключу.
-    // 2. Установите ключом удаляемого узла наименьшее возможное значение ключа min_key_value.
-    // 3. Вызовите над индексом удаляемого элемента функцию sift_up.
-    // 4. Извлеките корневой (удаляемый) узел из кучи операцией Extract.
+    if (!Contains(key)) {
+      return false;
+    }
 
+    int index = 0;
+    for (int i = 0; i < size(); i++) {
+      if (key == data_[i].key) {
+        index = i;
+      }
+    }
+    data_[index].key = min_key_value;
+    sift_up(index);
+    Extract();
     return true;
   }
 
   void MinBinaryHeap::Clear() {
-    // Write your code here ...
+    size_ = 0;
   }
 
   std::optional<int> MinBinaryHeap::Search(int key) const {
-    // Write your code here ...
+    for (int i = 0; i < size(); i++) {
+      if (data_[i].key == key) return data_[i].value;
+    }
     return std::nullopt;
   }
 
